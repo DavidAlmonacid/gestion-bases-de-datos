@@ -35,7 +35,9 @@ create index idx_domicilio on clientes (domicilio);
 -- 4. Crear un índice único
 create unique index idx_nombre on clientes (nombre);
 
+
 show index in clientes;
+
 
 -- 5. Total de los registros agrupados por provincia
 select provincia, count(*) as personas_por_provincia

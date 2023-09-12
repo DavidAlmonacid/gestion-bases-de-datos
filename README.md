@@ -1,1 +1,0 @@
-# gestion-bases-de-datos
