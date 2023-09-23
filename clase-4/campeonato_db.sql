@@ -39,18 +39,25 @@ VALUES
 ('Delfin', 'Guillermo Sanguinetti', '1989-03-01', 'Manta', 'Estadio Jocay', '042-123-456'),
 ('Macara', 'Paúl Vélez', '1939-04-01', 'Ambato', 'Estadio Bellavista', '042-123-456');
 
-INSERT INTO jugadores (id_jugador, nombre, apellido, nacimiento, tipo_sangre, codigo_equipo)
+INSERT INTO jugadores
 VALUES
-(1343556623, 'Damián', 'Díaz', '1986-05-11', 'O+', 1),
-(2637469282, 'Esteban', 'Dreer', '1981-05-11', 'AB-', 2),
-(3344773211, 'Adrián', 'Gabbarini', '1985-05-11', 'O+', 3),
-(4485748759, 'Pedro', 'Ortiz', '1986-05-11', 'O+', 4),
-(5109883475, 'Carlos', 'Feraud', '1986-05-11', 'O-', 5);
+(1, 'Damián', 'Díaz', '1986-05-11', 'O+', 1),
+(2, 'Esteban', 'Dreer', '1981-05-11', 'AB-', 2),
+(3, 'Adrián', 'Gabbarini', '1985-05-11', 'O+', 3),
+(4, 'Pedro', 'Ortiz', '1986-05-11', 'O+', 4),
+(5, 'Carlos', 'Feraud', '1986-05-11', 'O-', 5);
 
 
 -- 5. Agregar nuevo campo llamado "cedula" int(20) a la tabla jugadores
 ALTER TABLE jugadores
 ADD cedula INT(20) NOT NULL;
+
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE jugadores
+SET cedula = id_jugador;
+
+SET SQL_SAFE_UPDATES = 1;
 
 
 -- 6. Ingrese un sexto registro y reemplace ese registro en las 2 tablas
@@ -58,7 +65,7 @@ REPLACE INTO equipos (equipo, tecnico, fundacion, ciudad, direccion, telefono)
 VALUES
 ('Independiente del Valle', 'Miguel Ángel Ramírez', '1958-05-11', 'Sangolquí', 'Estadio Rumiñahui', '042-123-456');
 
-REPLACE INTO jugadores (id_jugador, nombre, apellido, nacimiento, tipo_sangre, codigo_equipo, cedula)
+REPLACE INTO jugadores
 VALUES
 (6, 'Cristian', 'Pellerano', '1981-05-11', 'B+', 6, 234566);
 
