@@ -340,10 +340,119 @@ BEGIN
     INSERT INTO copia_usuarios (nombre_usuario, tipo_usuario, id_usuario, accion)
     VALUES (OLD.nombre_usuario, OLD.tipo_usuario, OLD.id_usuario, 'eliminado');
 END @
+DELIMITER ;
 
 
+DELIMITER @
 CREATE TRIGGER insertar_clase
 AFTER INSERT ON clases
 FOR EACH ROW
 BEGIN
+    INSERT INTO seccion (id_clase)
+    VALUES (NEW.id_clase);
 END @
+
+CREATE TRIGGER modificar_clase
+AFTER UPDATE ON clases
+FOR EACH ROW
+BEGIN
+    UPDATE seccion
+    SET id_clase = NEW.id_clase
+    WHERE id_clase = OLD.id_clase;
+END @
+
+CREATE TRIGGER eliminar_clase
+AFTER DELETE ON clases
+FOR EACH ROW
+BEGIN
+    DELETE FROM seccion
+    WHERE id_clase = OLD.id_clase;
+END @
+DELIMITER ;
+
+
+DELIMITER @
+CREATE TRIGGER insertar_estudiante
+AFTER INSERT ON estudiantes
+FOR EACH ROW
+BEGIN
+    INSERT INTO personas (numero_identidad, rol)
+    VALUES (NEW.cedula, 'estudiante');
+
+    INSERT INTO matriculas (id_estudiante)
+    VALUES (NEW.id_estudiante);
+END @
+
+CREATE TRIGGER modificar_estudiante
+AFTER UPDATE ON estudiantes
+FOR EACH ROW
+BEGIN
+    UPDATE personas
+    SET numero_identidad = NEW.cedula
+    WHERE numero_identidad = OLD.cedula;
+
+    UPDATE matriculas
+    SET id_estudiante = NEW.id_estudiante
+    WHERE id_estudiante = OLD.id_estudiante;
+END @
+
+CREATE TRIGGER eliminar_estudiante
+AFTER DELETE ON estudiantes
+FOR EACH ROW
+BEGIN
+    DELETE FROM personas
+    WHERE numero_identidad = OLD.cedula;
+
+    DELETE FROM matriculas
+    WHERE id_estudiante = OLD.id_estudiante;
+END @
+DELIMITER ;
+
+
+-- Realizar 3 Funciones
+-- 1. Función que retorne el nombre completo de un estudiante.
+DELIMITER @
+CREATE FUNCTION nombre_completo_estudiante (id_estudiante INT) RETURNS VARCHAR(100) DETERMINISTIC
+BEGIN
+    DECLARE nombre_completo VARCHAR(100);
+
+    SELECT CONCAT(nombre, ' ', apellido) INTO nombre_completo
+    FROM personas
+    WHERE numero_identidad = id_estudiante;
+
+    RETURN nombre_completo;
+END @
+DELIMITER ;
+
+SELECT nombre_completo_estudiante(1022345678);
+
+-- 2. Función que actualice el salario de un empleado.
+DELIMITER @
+CREATE FUNCTION actualizar_salario_empleado (id_empleado INT, nuevo_salario INT) RETURNS INT
+BEGIN
+    UPDATE empleados
+    SET sueldo = nuevo_salario
+    WHERE id_empleado = id_empleado;
+
+    RETURN nuevo_salario;
+END @
+DELIMITER ;
+
+SELECT actualizar_salario_empleado(98764321, 2000000);
+SELECT sueldo FROM empleados WHERE id_empleado = 98764321;
+
+-- 3. Función para obtener una lista de todos los usuarios que hayan sido eliminados.
+DELIMITER @
+CREATE FUNCTION obtener_usuarios_eliminados () RETURNS VARCHAR(300) DETERMINISTIC
+BEGIN
+    DECLARE usuarios_eliminados VARCHAR(300);
+
+    SELECT GROUP_CONCAT(nombre_usuario) INTO usuarios_eliminados
+    FROM copia_usuarios
+    WHERE accion = 'eliminado';
+
+    RETURN usuarios_eliminados;
+END @
+DELIMITER ;
+
+SELECT obtener_usuarios_eliminados();
