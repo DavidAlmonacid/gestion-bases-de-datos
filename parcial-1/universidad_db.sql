@@ -12,10 +12,10 @@ CREATE TABLE direcciones (
 
 CREATE TABLE personas (
     numero_identidad INT,
-    nombre VARCHAR(100) NOT NULL,
-    apellido VARCHAR(100) NOT NULL,
-    telefono VARCHAR(20) NOT NULL,
-    id_direccion INT NOT NULL,
+    nombre VARCHAR(100),
+    apellido VARCHAR(100),
+    telefono VARCHAR(20),
+    id_direccion INT,
     rol SET('estudiante', 'empleado') NOT NULL,
     PRIMARY KEY (numero_identidad),
     FOREIGN KEY (id_direccion) REFERENCES direcciones(direccion)
@@ -110,7 +110,7 @@ CREATE TABLE clases (
 
 CREATE TABLE seccion (
     id_seccion INT AUTO_INCREMENT,
-    codigo_seccion VARCHAR(10) NOT NULL UNIQUE,
+    codigo_seccion INT NOT NULL UNIQUE,
     id_clases_creadas INT,
     id_clase INT,
     PRIMARY KEY (id_seccion),
@@ -118,6 +118,7 @@ CREATE TABLE seccion (
     FOREIGN KEY (id_clase) REFERENCES clases(id_clase)
 );
 
+CREATE INDEX codigo_seccion_index ON seccion (codigo_seccion);
 
 -- Modificar tres campos de la tabla clase.
 ALTER TABLE clases MODIFY nombre_clase VARCHAR(50) NOT NULL;
@@ -302,16 +303,16 @@ VALUES
 
 INSERT INTO seccion (codigo_seccion, id_clases_creadas, id_clase)
 VALUES
-('A', 1, 1),
-('B', 2, 2),
-('C', 3, 3),
-('D', 4, 4),
-('E', 5, 5),
-('F', 6, 6),
-('G', 7, 7),
-('H', 8, 8),
-('I', 9, 9),
-('J', 10, 10);
+(1, 1, 1),
+(2, 2, 2),
+(3, 3, 3),
+(4, 4, 4),
+(5, 5, 5),
+(6, 6, 6),
+(7, 7, 7),
+(8, 8, 8),
+(9, 9, 9),
+(10, 10, 10);
 
 
 -- Realizar tres Triggers para insertar, modificar y eliminar
@@ -334,7 +335,7 @@ BEGIN
 END @
 
 CREATE TRIGGER eliminar_usuario
-AFTER DELETE ON usuarios_universidad
+BEFORE DELETE ON usuarios_universidad
 FOR EACH ROW
 BEGIN
     INSERT INTO copia_usuarios (nombre_usuario, tipo_usuario, id_usuario, accion)
@@ -343,12 +344,14 @@ END @
 DELIMITER ;
 
 INSERT INTO usuarios_universidad (nombre_usuario, tipo_usuario, password_usuario)
-VALUES
-('usuario11', 'administrativo', '123456');
+VALUES ('usuario11', 'administrativo', '123456');
 
-update usuarios_universidad set tipo_usuario = 'profesor' where id_usuario = 11;
+UPDATE usuarios_universidad
+SET tipo_usuario = 'profesor'
+WHERE id_usuario = 11;
 
-delete from usuarios_universidad where id_usuario = 11;
+DELETE FROM usuarios_universidad
+WHERE id_usuario = 11;
 
 
 DELIMITER @
@@ -356,8 +359,12 @@ CREATE TRIGGER insertar_clase
 AFTER INSERT ON clases
 FOR EACH ROW
 BEGIN
-    INSERT INTO seccion (id_clase)
-    VALUES (NEW.id_clase);
+    DECLARE seccion_count INT;
+
+    SELECT COUNT(*) INTO seccion_count FROM seccion;
+
+    INSERT INTO seccion (codigo_seccion, id_clase)
+    VALUES (seccion_count + 1, NEW.id_clase);
 END @
 
 CREATE TRIGGER modificar_clase
@@ -370,69 +377,66 @@ BEGIN
 END @
 
 CREATE TRIGGER eliminar_clase
-AFTER DELETE ON clases
+BEFORE DELETE ON clases
 FOR EACH ROW
 BEGIN
-    SET SQL_SAFE_UPDATES = 0;
     DELETE FROM seccion
     WHERE id_clase = OLD.id_clase;
-    SET SQL_SAFE_UPDATES = 1;
 END @
 DELIMITER ;
 
 INSERT INTO clases (nombre_clase, horas_semanales, descripcion, id_clase)
-VALUES
-('Bases de datos II', 4, 'Aprenderás del manejo de una base de datos en MySQL', 11);
+VALUES ('Bases de datos II', 4, 'Aprenderás del manejo de una base de datos en MySQL', 11);
 
-update clases set nombre_clase = 'Bases de datos III' where id_clase = 11;
+UPDATE clases
+SET nombre_clase = 'Bases de datos III'
+WHERE id_clase = 11;
 
-delete from clases where id_clase = 11;
+DELETE FROM clases
+WHERE id_clase = 11;
 
 
 DELIMITER @
-CREATE TRIGGER insertar_estudiante
-AFTER INSERT ON estudiantes
+CREATE TRIGGER insertar_estudiante_before
+BEFORE INSERT ON estudiantes
 FOR EACH ROW
 BEGIN
     INSERT INTO personas (numero_identidad, rol)
     VALUES (NEW.cedula, 'estudiante');
+END @
 
-    INSERT INTO matriculas (id_estudiante)
-    VALUES (NEW.id_estudiante);
+CREATE TRIGGER insertar_estudiante_after
+AFTER INSERT ON estudiantes
+FOR EACH ROW
+BEGIN
+    INSERT INTO matriculas (annio, periodo, id_estudiante, id_clases_creadas)
+    VALUES (2023, 'II', NEW.id_estudiante, 10);
 END @
 
 CREATE TRIGGER modificar_estudiante
-AFTER UPDATE ON estudiantes
+BEFORE UPDATE ON estudiantes
 FOR EACH ROW
 BEGIN
-    UPDATE personas
-    SET numero_identidad = NEW.cedula
-    WHERE numero_identidad = OLD.cedula;
+    DECLARE persona_id INT;
 
-    UPDATE matriculas
-    SET id_estudiante = NEW.id_estudiante
-    WHERE id_estudiante = OLD.id_estudiante;
-END @
+    SELECT numero_identidad INTO persona_id
+    FROM personas
+    WHERE numero_identidad = NEW.cedula;
 
-CREATE TRIGGER eliminar_estudiante
-AFTER DELETE ON estudiantes
-FOR EACH ROW
-BEGIN
-    DELETE FROM personas
-    WHERE numero_identidad = OLD.cedula;
-
-    DELETE FROM matriculas
-    WHERE id_estudiante = OLD.id_estudiante;
+    IF persona_id IS NULL THEN
+        UPDATE personas
+        SET numero_identidad = NEW.cedula
+        WHERE numero_identidad = OLD.cedula;
+    END IF;
 END @
 DELIMITER ;
 
 INSERT INTO estudiantes (id_estudiante, cedula, fecha_nacimiento, id_acudiente)
-VALUES
-(1027345678, 1027345678, '1997-01-01', 72451332);
+VALUES (1027345678, 1027345678, '1997-01-01', 72451332);
 
-update estudiantes set fecha_nacimiento = '1997-07-07' where id_estudiante = 1027345678;
-
-delete from estudiantes where id_estudiante = 1027345678;
+UPDATE estudiantes
+SET fecha_nacimiento = '1997-07-07'
+WHERE id_estudiante = 1027345678;
 
 
 -- Realizar 3 Funciones
@@ -450,24 +454,24 @@ BEGIN
 END @
 DELIMITER ;
 
-SELECT nombre_completo_estudiante(1022345678);
+-- SELECT nombre_completo_estudiante(1022345678);
 
 -- 2. Función que actualice el salario de un empleado.
 DELIMITER @
 CREATE FUNCTION actualizar_salario_empleado (id_empleado INT, nuevo_salario INT) RETURNS INT
 BEGIN
-    SET SQL_SAFE_UPDATES = 0;
+    -- SET SQL_SAFE_UPDATES = 0;
     UPDATE empleados
     SET sueldo = nuevo_salario
     WHERE id_empleado = id_empleado;
-    SET SQL_SAFE_UPDATES = 1;
+    -- SET SQL_SAFE_UPDATES = 1;
 
     RETURN nuevo_salario;
 END @
 DELIMITER ;
 
-SELECT actualizar_salario_empleado(98764321, 2000000);
-SELECT sueldo FROM empleados WHERE id_empleado = 98764321;
+-- SELECT actualizar_salario_empleado(98764321, 2000000);
+-- SELECT sueldo FROM empleados WHERE id_empleado = 98764321;
 
 -- 3. Función para obtener una lista de todos los usuarios que hayan sido eliminados.
 DELIMITER @
@@ -483,4 +487,4 @@ BEGIN
 END @
 DELIMITER ;
 
-SELECT obtener_usuarios_eliminados();
+-- SELECT obtener_usuarios_eliminados();
