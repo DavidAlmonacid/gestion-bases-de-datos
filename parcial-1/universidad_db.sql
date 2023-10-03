@@ -103,7 +103,7 @@ CREATE TABLE clases (
     nombre_clase INT NOT NULL,
     horas_semanales VARCHAR(50) NOT NULL,
     descripcion VARCHAR(10) NOT NULL,
-    id_carrera INT NOT NULL,
+    id_carrera INT,
     PRIMARY KEY (id_clase),
     FOREIGN KEY (id_carrera) REFERENCES carreras(id_carrera)
 );
@@ -111,7 +111,7 @@ CREATE TABLE clases (
 CREATE TABLE seccion (
     id_seccion INT AUTO_INCREMENT,
     codigo_seccion VARCHAR(10) NOT NULL UNIQUE,
-    id_clases_creadas INT NOT NULL,
+    id_clases_creadas INT,
     id_clase INT,
     PRIMARY KEY (id_seccion),
     FOREIGN KEY (id_clases_creadas) REFERENCES clases_creadas(id_clases_creadas),
@@ -342,6 +342,14 @@ BEGIN
 END @
 DELIMITER ;
 
+INSERT INTO usuarios_universidad (nombre_usuario, tipo_usuario, password_usuario)
+VALUES
+('usuario11', 'administrativo', '123456');
+
+update usuarios_universidad set tipo_usuario = 'profesor' where id_usuario = 11;
+
+delete from usuarios_universidad where id_usuario = 11;
+
 
 DELIMITER @
 CREATE TRIGGER insertar_clase
@@ -365,10 +373,20 @@ CREATE TRIGGER eliminar_clase
 AFTER DELETE ON clases
 FOR EACH ROW
 BEGIN
+    SET SQL_SAFE_UPDATES = 0;
     DELETE FROM seccion
     WHERE id_clase = OLD.id_clase;
+    SET SQL_SAFE_UPDATES = 1;
 END @
 DELIMITER ;
+
+INSERT INTO clases (nombre_clase, horas_semanales, descripcion, id_clase)
+VALUES
+('Bases de datos II', 4, 'Aprenderás del manejo de una base de datos en MySQL', 11);
+
+update clases set nombre_clase = 'Bases de datos III' where id_clase = 11;
+
+delete from clases where id_clase = 11;
 
 
 DELIMITER @
@@ -408,6 +426,14 @@ BEGIN
 END @
 DELIMITER ;
 
+INSERT INTO estudiantes (id_estudiante, cedula, fecha_nacimiento, id_acudiente)
+VALUES
+(1027345678, 1027345678, '1997-01-01', 72451332);
+
+update estudiantes set fecha_nacimiento = '1997-07-07' where id_estudiante = 1027345678;
+
+delete from estudiantes where id_estudiante = 1027345678;
+
 
 -- Realizar 3 Funciones
 -- 1. Función que retorne el nombre completo de un estudiante.
@@ -430,9 +456,11 @@ SELECT nombre_completo_estudiante(1022345678);
 DELIMITER @
 CREATE FUNCTION actualizar_salario_empleado (id_empleado INT, nuevo_salario INT) RETURNS INT
 BEGIN
+    SET SQL_SAFE_UPDATES = 0;
     UPDATE empleados
     SET sueldo = nuevo_salario
     WHERE id_empleado = id_empleado;
+    SET SQL_SAFE_UPDATES = 1;
 
     RETURN nuevo_salario;
 END @
