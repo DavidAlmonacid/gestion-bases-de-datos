@@ -452,33 +452,41 @@ DELIMITER ;
 
 
 DELIMITER @
-CREATE FUNCTION actualizar_salario_empleado (id_empleado INT, nuevo_salario INT) RETURNS INT DETERMINISTIC
+CREATE FUNCTION completar_datos_persona (id_persona INT, nombre VARCHAR(50), apellido VARCHAR(50), telefono VARCHAR(20), id_direccion INT) RETURNS VARCHAR(100) DETERMINISTIC
 BEGIN
-    SET SQL_SAFE_UPDATES = 0;
-    UPDATE empleados
-    SET sueldo = nuevo_salario
-    WHERE id_empleado = id_empleado;
-    SET SQL_SAFE_UPDATES = 1;
+    DECLARE numero_documento INT;
 
-    RETURN nuevo_salario;
+    SELECT numero_identidad INTO numero_documento
+    FROM personas
+    WHERE numero_identidad = id_persona;
+
+    IF numero_documento IS NULL THEN
+        RETURN 'El número de documento no existe';
+    END IF;
+    
+    UPDATE personas
+    SET nombre = nombre, apellido = apellido, telefono = telefono, id_direccion = id_direccion
+    WHERE numero_identidad = numero_documento;
+
+    RETURN CONCAT('Datos de ', nombre_completo_persona(id_persona), ' completados');
 END @
 DELIMITER ;
 
--- SELECT actualizar_salario_empleado(98764321, 2000000) AS nuevo_salario;
--- SELECT id_empleado, sueldo FROM empleados WHERE id_empleado = 98764321;
+-- SELECT completar_datos_persona(1025948032, 'David', 'Almonacid', '555-1234', 1) AS completar_datos_persona;
 
 
 DELIMITER @
-CREATE FUNCTION obtener_usuarios_eliminados () RETURNS VARCHAR(300) DETERMINISTIC
+CREATE FUNCTION crear_matricula (id_estudiante INT, annio INT, periodo VARCHAR(10), id_clases_creadas INT) RETURNS VARCHAR(50) DETERMINISTIC
 BEGIN
-    DECLARE usuarios_eliminados VARCHAR(300);
+    DECLARE id_matricula INT;
 
-    SELECT GROUP_CONCAT(nombre_usuario) INTO usuarios_eliminados
-    FROM copia_usuarios
-    WHERE accion = 'eliminado';
+    INSERT INTO matriculas (annio, periodo, id_estudiante, id_clases_creadas)
+    VALUES (annio, periodo, id_estudiante, id_clases_creadas);
 
-    RETURN usuarios_eliminados;
+    SELECT LAST_INSERT_ID() INTO id_matricula;
+
+    RETURN CONCAT('Matrícula #', id_matricula, ' creada');
 END @
 DELIMITER ;
 
--- SELECT obtener_usuarios_eliminados() AS usuarios_eliminados;
+-- SELECT crear_matricula(1025948032, 2023, 'II', 1) AS crear_matricula;
