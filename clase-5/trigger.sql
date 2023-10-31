@@ -1,7 +1,5 @@
 DROP DATABASE IF EXISTS trigger_db;
-
 CREATE DATABASE trigger_db;
-
 USE trigger_db;
 
 
@@ -31,30 +29,28 @@ CREATE TABLE copia_clientes (
 );
 
 
-DELIMITER ;;
-
+DELIMITER //
 CREATE TRIGGER insertar_cliente BEFORE INSERT ON clientes
 FOR EACH ROW
 BEGIN
     INSERT INTO copia_clientes
     VALUES (NEW.nombre, NEW.apellido, NEW.email, NEW.telefono, NEW.documento, NOW(), 'Agregado');
-END;;
-
+END;
 
 CREATE TRIGGER actualizar_cliente BEFORE UPDATE ON clientes
 FOR EACH ROW
 BEGIN
     INSERT INTO copia_clientes
     VALUES (NEW.nombre, NEW.apellido, NEW.email, NEW.telefono, NEW.documento, NOW(), 'Modificado');
-END;;
-
+END;
 
 CREATE TRIGGER eliminar_cliente BEFORE DELETE ON clientes
 FOR EACH ROW
 BEGIN
     INSERT INTO copia_clientes
     VALUES (OLD.nombre, OLD.apellido, OLD.email, OLD.telefono, OLD.documento, NOW(), 'Eliminado');
-END;;
+END;
+//
 
 DELIMITER ;
 
