@@ -10,7 +10,7 @@ CREATE TABLE clientes (
     localidad VARCHAR(50) NOT NULL,
     telefono VARCHAR(20) NOT NULL,
     email VARCHAR(100) NOT NULL,
-    password VARCHAR(100) NOT NULL,
+    password CHAR(64) NOT NULL,
     foto_url VARCHAR(100),
     PRIMARY KEY (dni_cliente)
 );
@@ -63,7 +63,7 @@ CREATE TABLE empleados (
     direccion VARCHAR(100) NOT NULL,
     telefono VARCHAR(20) NOT NULL,
     email VARCHAR(100) NOT NULL,
-    password VARCHAR(100) NOT NULL,
+    password CHAR(64) NOT NULL,
     salario INT NOT NULL,
     comision INT NOT NULL,
     id_producto INT NOT NULL,

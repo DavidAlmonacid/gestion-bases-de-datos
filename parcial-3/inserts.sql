@@ -1,14 +1,14 @@
 INSERT INTO clientes VALUES
-('12345678A', 'Juan', 'Perez', 'Calle 1', 'Localidad 1', '123456789', 'juan@email.com', '123', ''),
-('12345678B', 'Pedro', 'Gomez', 'Calle 2', 'Localidad 2', '123456789', 'pedro@email.com', '123', ''),
-('12345678C', 'Maria', 'Lopez', 'Calle 3', 'Localidad 3', '123456789', 'maria@email.com', '123', ''),
-('12345678D', 'Jose', 'Rodriguez', 'Calle 4', 'Localidad 4', '123456789', 'jose@email.com', '123', ''),
-('12345678E', 'Ana', 'Martinez', 'Calle 5', 'Localidad 5', '123456789', 'ana@email.com', '123', ''),
-('12345678F', 'Carlos', 'Sanchez', 'Calle 6', 'Localidad 6', '123456789', 'carlos@email.com', '123', ''),
-('12345678G', 'Laura', 'Gonzalez', 'Calle 7', 'Localidad 7', '123456789', 'laura@email.com', '123', ''),
-('12345678H', 'Sergio', 'Diaz', 'Calle 8', 'Localidad 8', '123456789', 'sergio@email.com', '123', ''),
-('12345678I', 'Sofia', 'Perez', 'Calle 9', 'Localidad 9', '123456789', 'sofia@email.com', '123', ''),
-('12345678J', 'Jorge', 'Garcia', 'Calle 10', 'Localidad 10', '123456789', 'jorge@email.com', '123', '');
+('12345678A', 'Juan', 'Perez', 'Calle 1', 'Localidad 1', '123456789', 'juan@email.com', SHA2('123', 256), NULL),
+('12345678B', 'Pedro', 'Gomez', 'Calle 2', 'Localidad 2', '123456789', 'pedro@email.com', SHA2('123', 256), NULL),
+('12345678C', 'Maria', 'Lopez', 'Calle 3', 'Localidad 3', '123456789', 'maria@email.com', SHA2('123', 256), NULL),
+('12345678D', 'Jose', 'Rodriguez', 'Calle 4', 'Localidad 4', '123456789', 'jose@email.com', SHA2('123', 256), NULL),
+('12345678E', 'Ana', 'Martinez', 'Calle 5', 'Localidad 5', '123456789', 'ana@email.com', SHA2('123', 256), NULL),
+('12345678F', 'Carlos', 'Sanchez', 'Calle 6', 'Localidad 6', '123456789', 'carlos@email.com', SHA2('123', 256), NULL),
+('12345678G', 'Laura', 'Gonzalez', 'Calle 7', 'Localidad 7', '123456789', 'laura@email.com', SHA2('123', 256), NULL),
+('12345678H', 'Sergio', 'Diaz', 'Calle 8', 'Localidad 8', '123456789', 'sergio@email.com', SHA2('123', 256), NULL),
+('12345678I', 'Sofia', 'Perez', 'Calle 9', 'Localidad 9', '123456789', 'sofia@email.com', SHA2('123', 256), NULL),
+('12345678J', 'Jorge', 'Garcia', 'Calle 10', 'Localidad 10', '123456789', 'jorge@email.com', SHA2('123', 256), NULL);
 
 INSERT INTO productos (nombre, precio, descripcion, impresion, acabado, tipo_papel, tamaño, dni_cliente)
 VALUES
@@ -62,13 +62,13 @@ INSERT INTO departamentos (nombre, email) VALUES
 
 INSERT INTO empleados (dni_empleado, nombre, apellido, direccion, telefono, email, password, salario, comision, id_producto, nombre_departamento)
 VALUES
-('12345678Z', 'Empleado 1', 'Apellido 1', 'Direccion 1', '123456789', 'emp1@email.com', '123', 1000, 100, 1, 'Departamento 1'),
-('12345678Y', 'Empleado 2', 'Apellido 2', 'Direccion 2', '123456789', 'emp2@email.com', '123', 2000, 200, 2, 'Departamento 2'),
-('12345678X', 'Empleado 3', 'Apellido 3', 'Direccion 3', '123456789', 'emp3@email.com', '123', 3000, 300, 3, 'Departamento 3'),
-('12345678W', 'Empleado 4', 'Apellido 4', 'Direccion 4', '123456789', 'emp4@email.com', '123', 4000, 400, 4, 'Departamento 4'),
-('12345678V', 'Empleado 5', 'Apellido 5', 'Direccion 5', '123456789', 'emp5@email.com', '123', 5000, 500, 5, 'Departamento 5'),
-('12345678U', 'Empleado 6', 'Apellido 6', 'Direccion 6', '123456789', 'emp6@email.com', '123', 6000, 600, 6, 'Departamento 6'),
-('12345678T', 'Empleado 7', 'Apellido 7', 'Direccion 7', '123456789', 'emp7@email.com', '123', 7000, 700, 7, 'Departamento 7'),
-('12345678S', 'Empleado 8', 'Apellido 8', 'Direccion 8', '123456789', 'emp8@email.com', '123', 8000, 800, 8, 'Departamento 8'),
-('12345678R', 'Empleado 9', 'Apellido 9', 'Direccion 9', '123456789', 'emp9@email.com', '123', 9000, 900, 9, 'Departamento 9'),
-('12345678Q', 'Empleado 10', 'Apellido 10', 'Direccion 10', '123456789', 'emp10@email.com', '123', 10000, 1000, 10, 'Departamento 10');
+('12345678Z', 'Empleado 1', 'Apellido 1', 'Direccion 1', '123456789', 'emp1@email.com', SHA2('123', 256), 1000, 100, 1, 'Departamento 1'),
+('12345678Y', 'Empleado 2', 'Apellido 2', 'Direccion 2', '123456789', 'emp2@email.com', SHA2('123', 256), 2000, 200, 2, 'Departamento 2'),
+('12345678X', 'Empleado 3', 'Apellido 3', 'Direccion 3', '123456789', 'emp3@email.com', SHA2('123', 256), 3000, 300, 3, 'Departamento 3'),
+('12345678W', 'Empleado 4', 'Apellido 4', 'Direccion 4', '123456789', 'emp4@email.com', SHA2('123', 256), 4000, 400, 4, 'Departamento 4'),
+('12345678V', 'Empleado 5', 'Apellido 5', 'Direccion 5', '123456789', 'emp5@email.com', SHA2('123', 256), 5000, 500, 5, 'Departamento 5'),
+('12345678U', 'Empleado 6', 'Apellido 6', 'Direccion 6', '123456789', 'emp6@email.com', SHA2('123', 256), 6000, 600, 6, 'Departamento 6'),
+('12345678T', 'Empleado 7', 'Apellido 7', 'Direccion 7', '123456789', 'emp7@email.com', SHA2('123', 256), 7000, 700, 7, 'Departamento 7'),
+('12345678S', 'Empleado 8', 'Apellido 8', 'Direccion 8', '123456789', 'emp8@email.com', SHA2('123', 256), 8000, 800, 8, 'Departamento 8'),
+('12345678R', 'Empleado 9', 'Apellido 9', 'Direccion 9', '123456789', 'emp9@email.com', SHA2('123', 256), 9000, 900, 9, 'Departamento 9'),
+('12345678Q', 'Empleado 10', 'Apellido 10', 'Direccion 10', '123456789', 'emp10@email.com', SHA2('123', 256), 10000, 1000, 10, 'Departamento 10');
