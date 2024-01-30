@@ -15,17 +15,6 @@ CREATE TABLE clientes (
     PRIMARY KEY (dni_cliente)
 );
 
-CREATE TABLE facturas (
-    id_factura INT NOT NULL AUTO_INCREMENT,
-    fecha DATE NOT NULL,
-    monto INT NOT NULL,
-    importe INT NOT NULL,
-    envio INT NOT NULL,
-    dni_cliente VARCHAR(12) NOT NULL,
-    PRIMARY KEY (id_factura),
-    FOREIGN KEY (dni_cliente) REFERENCES clientes(dni_cliente)
-);
-
 CREATE TABLE productos (
     id_producto INT NOT NULL AUTO_INCREMENT,
     nombre VARCHAR(100) NOT NULL,
@@ -39,6 +28,19 @@ CREATE TABLE productos (
     dni_cliente VARCHAR(12) NOT NULL,
     PRIMARY KEY (id_producto),
     FOREIGN KEY (dni_cliente) REFERENCES clientes(dni_cliente)
+);
+
+CREATE TABLE facturas (
+    id_factura INT NOT NULL AUTO_INCREMENT,
+    fecha DATE NOT NULL,
+    monto INT NOT NULL,
+    importe INT NOT NULL,
+    envio INT NOT NULL,
+    dni_cliente VARCHAR(12) NOT NULL,
+    id_producto INT NOT NULL,
+    PRIMARY KEY (id_factura),
+    FOREIGN KEY (dni_cliente) REFERENCES clientes(dni_cliente),
+    FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
 );
 
 CREATE TABLE diseños (
