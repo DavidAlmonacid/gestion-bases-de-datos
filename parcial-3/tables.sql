@@ -74,3 +74,14 @@ CREATE TABLE empleados (
     FOREIGN KEY (id_producto) REFERENCES productos(id_producto),
     FOREIGN KEY (nombre_departamento) REFERENCES departamentos(nombre)
 );
+
+CREATE TABLE copia_empleados (
+    dni_empleado VARCHAR(12) NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    nombre_departamento VARCHAR(50) NOT NULL,
+    estado VARCHAR(20) NOT NULL,
+    accion VARCHAR(20) NOT NULL,
+    fecha_copia DATETIME NOT NULL
+);
