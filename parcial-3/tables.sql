@@ -9,7 +9,7 @@ CREATE TABLE clientes (
     direccion VARCHAR(100) NOT NULL,
     localidad VARCHAR(50) NOT NULL,
     telefono VARCHAR(20) NOT NULL,
-    email VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
     password CHAR(64) NOT NULL,
     foto_url VARCHAR(100),
     PRIMARY KEY (dni_cliente)
@@ -17,7 +17,7 @@ CREATE TABLE clientes (
 
 CREATE TABLE productos (
     id_producto INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(100) NOT NULL,
+    nombre VARCHAR(100) NOT NULL UNIQUE,
     precio INT NOT NULL,
     foto_url VARCHAR(100),
     descripcion TEXT NOT NULL,
@@ -84,4 +84,11 @@ CREATE TABLE copia_empleados (
     estado VARCHAR(20) NOT NULL,
     accion VARCHAR(20) NOT NULL,
     fecha_copia DATETIME NOT NULL
+);
+
+CREATE TABLE log_messages (
+    id INT AUTO_INCREMENT,
+    message VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL,
+    PRIMARY KEY (id)
 );
